@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 input_file = args.input
 
-if not os.path.exists(input_file): print('file not found')
+if not os.path.exists(input_file): exit('file not found')
 
 midid = np.dtype([('state', np.int8),('chan', np.int8),('start', np.int32),('end', np.int32),('key', np.int8),('vol', np.int8)]) 
 flpd = np.dtype([('pos', np.uint32),('flags', np.uint16),('rack', np.uint16),('dur', np.uint32),('key', np.uint8),('unk1', np.uint8),('unk2', np.uint8),('chan', np.uint8),('unk3', np.uint8),('vol', np.uint8),('unk4', np.uint8),('unk5', np.uint8),]) 
