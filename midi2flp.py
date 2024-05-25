@@ -125,6 +125,7 @@ for c, t in enumerate(tracks_data):
 			flnote['key'] = key
 			flnote['chan'] = chan
 			flnote['vol'] = vol
+			flnote['unk1'] = 120
 			flnote['unk3'] = 64
 			flnote['unk4'] = 128
 			flnote['unk5'] = 128
