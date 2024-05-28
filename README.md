@@ -1,3 +1,5 @@
+Parser by [OmarEmaraDev](https://github.com/OmarEmaraDev/midi-parser)
+
 install
 
-```pip install mido numpy rich varint```
+```pip install numpy rich varint```

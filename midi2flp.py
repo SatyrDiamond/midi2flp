@@ -1,9 +1,9 @@
 from io import BytesIO
-from mido import MidiFile
+from midiparser.parser import MidiFile
+from midiparser import events
 from rich.progress import Progress
 import numpy as np
 import struct
-import threading
 import varint
 import argparse
 import os
@@ -42,44 +42,45 @@ def do_track(tnum, miditrack, progress):
 	global tracks_data
 	global tracknames
 	notes = [[[] for x in range(128)] for x in range(16)]
-	numevents = len(miditrack)
+	numevents = len(miditrack.events)
 	track_progress = progress.add_task("Track "+str(tnum), total=numevents)
 	notebin = np.zeros(numevents, dtype=midid)
 	numnote = 0
 	curpos = 0
-	for msg in miditrack:
-		curpos += msg.time
-		if msg.type == 'note_on' and msg.velocity != 0:
+	for msg in miditrack.events:
+		curpos += msg.deltaTime
+		if type(msg) == events.NoteOnEvent and msg.velocity != 0:
 			notebin[numnote] = (1, msg.channel, curpos, 0, msg.note, msg.velocity)
 			notes[msg.channel][msg.note].append(numnote)
 			numnote += 1
-		elif msg.type == 'note_on' and msg.velocity == 0:
+		elif type(msg) == events.NoteOnEvent and msg.velocity == 0:
 			nd = notes[msg.channel][msg.note]
 			if nd:
 				notenum = nd.pop()
 				notebin[notenum][3] = curpos
 				notebin[notenum][0] = 2
-		elif msg.type == 'note_off':
+		elif type(msg) == events.NoteOffEvent:
 			nd = notes[msg.channel][msg.note]
 			if nd:
 				notenum = nd.pop()
 				notebin[notenum][3] = curpos
 				notebin[notenum][0] = 2
-		elif msg.type == 'track_name': 
+		elif type(msg) == events.TrackNameEvent: 
 			tracknames[tnum] = msg.name
 		progress.update(track_progress, advance=1)
 	tracks_data[tnum] = notebin[1:numnote+1]
 
 
-midifile = MidiFile(input_file)
+midifile = MidiFile.fromFile(input_file)
 
 tracks_data = [None for x in range(len(midifile.tracks))]
 tracknames = [None for x in range(len(midifile.tracks))]
 
 with Progress() as progress:
 	for n, x in enumerate(midifile.tracks):
-		td = threading.Thread(target=do_track, args=(n, x, progress))
-		td.start()
+		do_track(n,x,progress)
+		# td = threading.Thread(target=do_track, args=(n, x, progress))
+		# td.start()
 	while not progress.finished: pass
 
 flpout = open('out.flp', 'wb')
@@ -87,7 +88,7 @@ flpout = open('out.flp', 'wb')
 data_FLhd = BytesIO()
 data_FLhd.write((len(tracks_data)).to_bytes(3, 'big'))
 data_FLhd.write(b'\x00')
-data_FLhd.write((midifile.ticks_per_beat).to_bytes(2, 'little'))
+data_FLhd.write((midifile.ppqn).to_bytes(2, 'little'))
 
 data_FLdt = BytesIO()
 
@@ -147,4 +148,3 @@ flpout.write(b'FLdt')
 data_FLdt_out = data_FLdt.read()
 flpout.write(len(data_FLdt_out).to_bytes(4, 'little'))
 flpout.write(data_FLdt_out)
-
