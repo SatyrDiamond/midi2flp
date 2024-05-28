@@ -4,7 +4,6 @@ from midiparser import events
 from rich.progress import Progress
 import numpy as np
 import struct
-import threading
 import varint
 import argparse
 import os
