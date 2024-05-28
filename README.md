@@ -1,4 +1,4 @@
-Parser by [OmarEmaraDev]{https://github.com/OmarEmaraDev/midi-parser}
+Parser by [OmarEmaraDev](https://github.com/OmarEmaraDev/midi-parser)
 
 install
 
