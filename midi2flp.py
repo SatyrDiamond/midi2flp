@@ -8,9 +8,6 @@ import threading
 import varint
 import argparse
 import os
-import time
-
-timer = time.time()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("input")
@@ -76,7 +73,6 @@ def do_track(tnum, miditrack, progress):
 
 
 midifile = MidiFile.fromFile(input_file)
-print(f"Load midi: {time.time() - timer}s")
 
 tracks_data = [None for x in range(len(midifile.tracks))]
 tracknames = [None for x in range(len(midifile.tracks))]
@@ -153,5 +149,3 @@ flpout.write(b'FLdt')
 data_FLdt_out = data_FLdt.read()
 flpout.write(len(data_FLdt_out).to_bytes(4, 'little'))
 flpout.write(data_FLdt_out)
-
-print(f"Total runtime: {time.time() - timer}s")
