@@ -8,6 +8,14 @@ import varint
 import argparse
 import os
 
+PRINT_VISUAL = False
+
+if PRINT_VISUAL:
+	import psutil
+	process = psutil.Process()
+	import time
+	tic = time.perf_counter()
+
 parser = argparse.ArgumentParser()
 parser.add_argument("input")
 args = parser.parse_args()
@@ -82,6 +90,12 @@ with Progress() as progress:
 		# td = threading.Thread(target=do_track, args=(n, x, progress))
 		# td.start()
 	while not progress.finished: pass
+
+if PRINT_VISUAL:
+	toc = time.perf_counter()
+	print('MEMORY', process.memory_info().rss/1024/1024)
+	print('TIME',toc-tic)
+
 
 flpout = open('out.flp', 'wb')
 
