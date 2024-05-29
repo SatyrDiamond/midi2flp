@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class NoteOnEvent:
+    __slots__ = ['deltaTime', 'channel', 'note', 'velocity']
     deltaTime: int
     channel: int
     note: int
@@ -16,6 +17,7 @@ class NoteOnEvent:
 
 @dataclass
 class NoteOffEvent:
+    __slots__ = ['deltaTime', 'channel', 'note', 'velocity']
     deltaTime: int
     channel: int
     note: int
