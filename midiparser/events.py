@@ -31,6 +31,7 @@ class NoteOffEvent:
 
 @dataclass
 class NotePressureEvent:
+    __slots__ = ['deltaTime', 'channel', 'note', 'pressure']
     deltaTime: int
     channel: int
     note: int
@@ -44,6 +45,7 @@ class NotePressureEvent:
 
 @dataclass
 class ControllerEvent:
+    __slots__ = ['deltaTime', 'channel', 'controller', 'value']
     deltaTime: int
     channel: int
     controller: int
@@ -57,6 +59,7 @@ class ControllerEvent:
 
 @dataclass
 class ProgramEvent:
+    __slots__ = ['deltaTime', 'channel', 'program']
     deltaTime: int
     channel: int
     program: int
@@ -68,6 +71,7 @@ class ProgramEvent:
 
 @dataclass
 class ChannelPressureEvent:
+    __slots__ = ['deltaTime', 'channel', 'pressure']
     deltaTime: int
     channel: int
     pressure: int
@@ -79,6 +83,7 @@ class ChannelPressureEvent:
 
 @dataclass
 class PitchBendEvent:
+    __slots__ = ['deltaTime', 'channel', 'lsb', 'msb']
     deltaTime: int
     channel: int
     lsb: int
@@ -92,6 +97,7 @@ class PitchBendEvent:
 
 @dataclass
 class SequenceNumberEvent:
+    __slots__ = ['deltaTime', 'sequenceNumber']
     deltaTime: int
     sequenceNumber: int
 
@@ -102,6 +108,7 @@ class SequenceNumberEvent:
 
 @dataclass
 class TextEvent:
+    __slots__ = ['deltaTime', 'text']
     deltaTime: int
     text: str
 
@@ -112,6 +119,7 @@ class TextEvent:
 
 @dataclass
 class CopyrightEvent:
+    __slots__ = ['deltaTime', 'copyright']
     deltaTime: int
     copyright: str
 
@@ -122,6 +130,7 @@ class CopyrightEvent:
 
 @dataclass
 class TrackNameEvent:
+    __slots__ = ['deltaTime', 'name']
     deltaTime: int
     name: str
 
@@ -132,6 +141,7 @@ class TrackNameEvent:
 
 @dataclass
 class InstrumentNameEvent:
+    __slots__ = ['deltaTime', 'name']
     deltaTime: int
     name: str
 
@@ -142,6 +152,7 @@ class InstrumentNameEvent:
 
 @dataclass
 class LyricEvent:
+    __slots__ = ['deltaTime', 'lyric']
     deltaTime: int
     lyric: str
 
@@ -152,6 +163,7 @@ class LyricEvent:
 
 @dataclass
 class MarkerEvent:
+    __slots__ = ['deltaTime', 'marker']
     deltaTime: int
     marker: str
 
@@ -162,6 +174,7 @@ class MarkerEvent:
 
 @dataclass
 class CuePointEvent:
+    __slots__ = ['deltaTime', 'cuePoint']
     deltaTime: int
     cuePoint: str
 
@@ -172,6 +185,7 @@ class CuePointEvent:
 
 @dataclass
 class ProgramNameEvent:
+    __slots__ = ['deltaTime', 'name']
     deltaTime: int
     name: str
 
@@ -182,6 +196,7 @@ class ProgramNameEvent:
 
 @dataclass
 class DeviceNameEvent:
+    __slots__ = ['deltaTime', 'name']
     deltaTime: int
     name: str
 
@@ -192,6 +207,7 @@ class DeviceNameEvent:
 
 @dataclass
 class MidiChannelPrefixEvent:
+    __slots__ = ['deltaTime', 'prefix']
     deltaTime: int
     prefix: int
 
@@ -202,6 +218,7 @@ class MidiChannelPrefixEvent:
 
 @dataclass
 class MidiPortEvent:
+    __slots__ = ['deltaTime', 'port']
     deltaTime: int
     port: int
 
@@ -212,6 +229,7 @@ class MidiPortEvent:
 
 @dataclass
 class EndOfTrackEvent:
+    __slots__ = ['deltaTime']
     deltaTime: int
 
     @classmethod
@@ -220,6 +238,7 @@ class EndOfTrackEvent:
 
 @dataclass
 class TempoEvent:
+    __slots__ = ['deltaTime', 'tempo']
     deltaTime: int
     tempo: int
 
@@ -230,6 +249,7 @@ class TempoEvent:
 
 @dataclass
 class SmpteOffsetEvent:
+    __slots__ = ['deltaTime', 'hours', 'minutes', 'seconds', 'fps', 'fractionalFrames']
     deltaTime: int
     hours: int
     minutes: int
@@ -248,6 +268,7 @@ class SmpteOffsetEvent:
 
 @dataclass
 class TimeSignatureEvent:
+    __slots__ = ['deltaTime', 'numerator', 'denominator', 'clocksPerClick', 'thirtySecondPer24Clocks']
     deltaTime: int
     numerator: int
     denominator: int
@@ -264,6 +285,7 @@ class TimeSignatureEvent:
 
 @dataclass
 class KeySignatureEvent:
+    __slots__ = ['deltaTime', 'flatsSharps', 'majorMinor']
     deltaTime: int
     flatsSharps: int
     majorMinor: int
@@ -276,6 +298,7 @@ class KeySignatureEvent:
 
 @dataclass
 class SequencerEvent:
+    __slots__ = ['deltaTime', 'data']
     deltaTime: int
     data: bytes
 
@@ -286,6 +309,7 @@ class SequencerEvent:
 
 @dataclass
 class SysExEvent:
+    __slots__ = ['deltaTime', 'data']
     deltaTime: int
     data: bytes
 
@@ -296,6 +320,7 @@ class SysExEvent:
 
 @dataclass
 class EscapeSequenceEvent:
+    __slots__ = ['deltaTime', 'data']
     deltaTime: int
     data: bytes
 
