@@ -11,8 +11,7 @@ class NoteOnEvent:
 
     @classmethod
     def fromMemoryMap(cls, deltaTime, channel, memoryMap):
-        note = struct.unpack("B", memoryMap.read(1))[0]
-        velocity = struct.unpack("B", memoryMap.read(1))[0]
+        note, velocity = struct.unpack("BB", memoryMap.read(2))
         return cls(deltaTime, channel, note, velocity)
 
 @dataclass
@@ -25,8 +24,7 @@ class NoteOffEvent:
 
     @classmethod
     def fromMemoryMap(cls, deltaTime, channel, memoryMap):
-        note = struct.unpack("B", memoryMap.read(1))[0]
-        velocity = struct.unpack("B", memoryMap.read(1))[0]
+        note, velocity = struct.unpack("BB", memoryMap.read(2))
         return cls(deltaTime, channel, note, velocity)
 
 @dataclass
