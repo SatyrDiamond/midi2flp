@@ -125,8 +125,7 @@ make_flevent(data_FLdt, 65, 1)
 make_flevent(data_FLdt, 193, "All".encode('utf8') + b'\x00')
 
 numnotes = 0
-for c, t in enumerate(tracks_data):
-	numnotes += len(t)
+for t in tracks_data: numnotes += len(t)
 
 notebin = np.zeros(numnotes, dtype=flpd)
 
