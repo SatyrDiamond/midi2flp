@@ -9,6 +9,7 @@ import argparse
 import os
 
 PRINT_VISUAL = False
+totalnotes = 0
 
 if PRINT_VISUAL:
 	import psutil
@@ -49,24 +50,20 @@ def make_flevent(FLdt_bytes, value, data):
 def do_track(tnum, miditrack, progress):
 	global tracks_data
 	global tracknames
+	global totalnotes
 	notes = [[[] for x in range(128)] for x in range(16)]
 	numevents = len(miditrack.events)
+	totalnotes += numevents
 	track_progress = progress.add_task("Track "+str(tnum), total=numevents)
 	notebin = np.zeros(numevents, dtype=midid)
 	numnote = 0
 	curpos = 0
 	for msg in miditrack.events:
 		curpos += msg.deltaTime
-		if type(msg) == events.NoteOnEvent and msg.velocity != 0:
+		if type(msg) == events.NoteOnEvent:
 			notebin[numnote] = (1, msg.channel, curpos, 0, msg.note, msg.velocity)
 			notes[msg.channel][msg.note].append(numnote)
 			numnote += 1
-		elif type(msg) == events.NoteOnEvent and msg.velocity == 0:
-			nd = notes[msg.channel][msg.note]
-			if nd:
-				notenum = nd.pop()
-				notebin[notenum][3] = curpos
-				notebin[notenum][0] = 2
 		elif type(msg) == events.NoteOffEvent:
 			nd = notes[msg.channel][msg.note]
 			if nd:
@@ -76,7 +73,7 @@ def do_track(tnum, miditrack, progress):
 		elif type(msg) == events.TrackNameEvent: 
 			tracknames[tnum] = msg.name
 		progress.update(track_progress, advance=1)
-	tracks_data[tnum] = notebin[1:numnote+1]
+	tracks_data[tnum] = notebin[0:numnote]
 
 
 midifile = MidiFile.fromFile(input_file)
@@ -124,12 +121,8 @@ make_flevent(data_FLdt, 10, 0)
 make_flevent(data_FLdt, 65, 1)
 make_flevent(data_FLdt, 193, "All".encode('utf8') + b'\x00')
 
-numnotes = 0
-for t in tracks_data: numnotes += len(t)
+notebin = np.zeros(totalnotes, dtype=flpd)
 
-notebin = np.zeros(numnotes, dtype=flpd)
-
-invalid = 0
 numnote = 0
 
 for c, t in enumerate(tracks_data):
@@ -137,28 +130,25 @@ for c, t in enumerate(tracks_data):
 	if tracknames[c]: make_flevent(data_FLdt, 192, tracknames[c].encode('utf8') + b'\x00')
 
 	for state, chan, start, end, key, vol in t:
-		if state == 2: 
-			flnote = notebin[numnote]
-			flnote['pos'] = start
-			flnote['flags'] = 16384
-			flnote['rack'] = c
-			flnote['dur'] = end-start
-			flnote['key'] = key
-			flnote['chan'] = chan
-			flnote['vol'] = vol
-			flnote['unk1'] = 120
-			flnote['unk3'] = 64
-			flnote['unk4'] = 128
-			flnote['unk5'] = 128
-			numnote += 1
-		else: 
-			invalid += 1
+		flnote = notebin[numnote]
+		flnote['pos'] = start
+		flnote['flags'] = 16384
+		flnote['rack'] = c
+		flnote['dur'] = end-start
+		flnote['key'] = key
+		flnote['chan'] = chan
+		flnote['vol'] = vol
+		flnote['unk1'] = 120
+		flnote['unk3'] = 64
+		flnote['unk4'] = 128
+		flnote['unk5'] = 128
+		numnote += 1
 
 nums = notebin.argsort(order=['pos'])
 notebin = notebin[nums]
 notebin = notebin[np.where(notebin['unk1']==120)]
 
-make_flevent(data_FLdt, 224, notebin[0:len(notebin)-invalid].tobytes())
+make_flevent(data_FLdt, 224, notebin[0:len(notebin)].tobytes())
 make_flevent(data_FLdt, 129, 65536)
 
 data_FLhd.seek(0)
